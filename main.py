@@ -14,6 +14,9 @@ async def main_loop():
                 monitor_deaths(),
                 monitor_online(),
             )
+            print(f"[LOG] Aguardando {CHECK_INTERVAL} segundos para o próximo ciclo.")
+            await asyncio.sleep(CHECK_INTERVAL)
+            print(f"[LOG] Retomando o ciclo.")
         except Exception as e:
             print(f"[ERRO] Exceção no loop principal: {e}")
             await asyncio.sleep(CHECK_INTERVAL)

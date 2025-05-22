@@ -102,6 +102,10 @@ async def monitor_online():
     print(f"[INFO] Jogadores online detectados: {len(current_names)}")
     print(f"[INFO] Cache atual: {len(cache)} jogadores notificados")
 
+    novos_cacheados = 0
+    irrelevantes_seguidos = 0
+    IRRELEVANTES_LIMITE = 3
+
     for name in current_names:
         if name not in cache:
             try:
@@ -109,7 +113,21 @@ async def monitor_online():
                 player = await get_player_details(name)
 
                 if player is None:
-                    continue  # Level < 400, ignorado sem cache
+                    irrelevantes_seguidos += 1
+                    print(f"[DEBUG] Ignorado {name}: level < 400 ({irrelevantes_seguidos}/{IRRELEVANTES_LIMITE})")
+
+                    # ✅ Cacheia irrelevante para não repetir no próximo ciclo
+                    cache[name] = True
+
+                    if irrelevantes_seguidos >= IRRELEVANTES_LIMITE:
+                        print("[INFO] Interrompendo análise — 3 jogadores irrelevantes consecutivos.")
+                        # ✅ Salva imediatamente antes de sair
+                        save_last_online(cache)
+                        break
+
+                    continue
+
+                irrelevantes_seguidos = 0  # Reset contador
 
                 if player.guild in ["Red Sky", "Carteira Assinada"]:
                     msg = format_discord_message(player)
@@ -117,13 +135,14 @@ async def monitor_online():
                         await send_discord_message(msg, settings.DISCORD_WEBHOOK_URL_ONLINE)
 
                 cache[name] = True
-                save_last_online(cache)
                 print(f"[DEBUG] Cacheando {name} (Level {player.level})")
 
             except Exception as e:
                 print(f"[ERRO] Falha ao obter detalhes de {name}: {e}")
 
-
+    if novos_cacheados == 0:
+        print("[INFO] Nenhum novo jogador relevante encontrado. Finalizando rodada.")
+        return
 
     # Remove jogadores que deslogaram
     names_to_remove = [n for n in cache if n not in current_names]
@@ -131,5 +150,4 @@ async def monitor_online():
         del cache[n]
 
     save_last_online(cache)
-    print(f"[DEBUG] Cache persistido com {len(cache)} jogadores:")
-    print(json.dumps(cache, indent=2))
+    print(f"[DEBUG] Cache persistido com {len(cache)} jogadores.")
