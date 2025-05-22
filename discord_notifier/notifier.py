@@ -3,12 +3,19 @@ from core.config import settings
 
 import aiohttp
 
-async def send_discord_message(content: str, webhook_url: str):
+async def send_discord_message(content: str, webhook_url: str, color: int = 0x000000):
     if not webhook_url:
         print("[ERRO] Webhook do Discord não configurado.")
         return
 
-    payload = {"content": content}
+    payload = {
+        "embeds": [
+            {
+                "description": content,
+                "color": color
+            }
+        ]
+    }
 
     try:
         async with aiohttp.ClientSession() as session:

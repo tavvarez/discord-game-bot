@@ -34,13 +34,15 @@ def save_last_online(data: dict):
     except Exception as e:
         print(f"[ERRO] Falha ao salvar {CACHE_FILE}: {e}")
 
-def format_discord_message(player: Player) -> str:
+def format_discord_message(player: Player) -> tuple[str, int] | None:
     hora = datetime.now().strftime("%H:%M:%S")
     if player.guild == "Red Sky":
-        return f"[FRIEND-{hora}] Acabou de logar: {player.name} (Level {player.level}) - {player.vocation}"
+        msg = f"[FRIEND-{hora}] Acabou de logar: {player.name} (Level {player.level}) - {player.vocation}"
+        return msg, 0x00ff00  # verde
     elif player.guild == "Carteira Assinada":
-        return f"[HUNTED-{hora}] Acabou de logar: {player.name} (Level {player.level}) - {player.vocation}"
-    return ""  # Ignora guilds irrelevantes
+        msg = f"[HUNTED-{hora}] Acabou de logar: {player.name} (Level {player.level}) - {player.vocation}"
+        return msg, 0xff0000  # vermelho
+    return None
 
 async def fetch_html(url: str) -> str:
     async with aiohttp.ClientSession() as session:
@@ -130,9 +132,10 @@ async def monitor_online():
                 irrelevantes_seguidos = 0  # Reset contador
 
                 if player.guild in ["Red Sky", "Carteira Assinada"]:
-                    msg = format_discord_message(player)
-                    if msg:
-                        await send_discord_message(msg, settings.DISCORD_WEBHOOK_URL_ONLINE)
+                    msg_info = format_discord_message(player)
+                    if msg_info:
+                        msg, color = msg_info
+                        await send_discord_message(msg, settings.DISCORD_WEBHOOK_URL_ONLINE, color=color)
 
                 cache[name] = True
                 print(f"[DEBUG] Cacheando {name} (Level {player.level})")
