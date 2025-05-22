@@ -1,18 +1,18 @@
 import asyncio
 from core.config import settings
 from apps.deaths_monitor.service import monitor_deaths
-# from app.online_monitor.service import monitor_online
+from apps.online_monitor.service import monitor_online
 
 CHECK_INTERVAL = 30
 
 async def main_loop():
-    print("Bot de mortes NTO iniciado.")
+    print("Bot monitorando mortes e players online.")
 
     while True:
         try:
             await asyncio.gather(
                 monitor_deaths(),
-                # monitor_online(),
+                monitor_online(),
             )
         except Exception as e:
             print(f"[ERRO] Exceção no loop principal: {e}")

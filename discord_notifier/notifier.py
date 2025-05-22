@@ -1,16 +1,14 @@
 import aiohttp
 from core.config import settings
 
-async def send_discord_message(content: str):
-    webhook_url = settings.DISCORD_WEBHOOK_URL
+import aiohttp
 
+async def send_discord_message(content: str, webhook_url: str):
     if not webhook_url:
         print("[ERRO] Webhook do Discord não configurado.")
         return
 
-    payload = {
-        "content": content
-    }
+    payload = {"content": content}
 
     try:
         async with aiohttp.ClientSession() as session:
@@ -20,3 +18,4 @@ async def send_discord_message(content: str):
                     print(f"[ERRO] Falha ao enviar webhook. Status {resp.status}: {body}")
     except Exception as e:
         print(f"[ERRO] Exceção ao enviar webhook: {e}")
+
