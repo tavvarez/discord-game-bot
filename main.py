@@ -1,9 +1,10 @@
 import asyncio
+from apps.level_monitor.service import monitor_level_ups
 from core.config import settings
 from apps.deaths_monitor.service import monitor_deaths
 from apps.online_monitor.service import monitor_online
 
-CHECK_INTERVAL = 30
+CHECK_INTERVAL = 120
 
 async def main_loop():
     print("Bot monitorando mortes e players online.")
@@ -12,7 +13,8 @@ async def main_loop():
         try:
             await asyncio.gather(
                 monitor_deaths(),
-                monitor_online(),
+                # monitor_online(),
+                # monitor_level_ups()
             )
             print(f"[LOG] Aguardando {CHECK_INTERVAL} segundos para o próximo ciclo.")
             await asyncio.sleep(CHECK_INTERVAL)

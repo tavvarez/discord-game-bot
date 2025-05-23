@@ -118,12 +118,10 @@ async def monitor_online():
                     irrelevantes_seguidos += 1
                     print(f"[DEBUG] Ignorado {name}: level < 400 ({irrelevantes_seguidos}/{IRRELEVANTES_LIMITE})")
 
-                    # ✅ Cacheia irrelevante para não repetir no próximo ciclo
                     cache[name] = True
 
                     if irrelevantes_seguidos >= IRRELEVANTES_LIMITE:
                         print("[INFO] Interrompendo análise — 3 jogadores irrelevantes consecutivos.")
-                        # ✅ Salva imediatamente antes de sair
                         save_last_online(cache)
                         break
 
