@@ -4,6 +4,7 @@ import aiohttp
 import asyncio
 from bs4 import BeautifulSoup
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from core.config import settings
 from discord_notifier.notifier import send_discord_message
 from apps.online_monitor.models import Player
@@ -73,7 +74,6 @@ async def get_player_details(name: str) -> Player | None:
                     guild = "Carteira Assinada"
 
         if level < 400:
-            print(f"[DEBUG] Ignorado {name}: level {level} < 400")
             return None
 
         return Player(name=name, vocation=vocation, level=level, guild=guild)
@@ -100,7 +100,7 @@ async def monitor_level_ups():
                 continue
 
             if player.level > last_level:
-                hora = datetime.now().strftime("%H:%M:%S")
+                hora = datetime.now(ZoneInfo("America/Sao_Paulo")).strftime("%H:%M:%S")
 
                 if player.guild == "Red Sky":
                     msg = f"🆙 - {hora} [**FRIEND**]  **{player.name}** upou para o level **{player.level}** ( {player.vocation} )"

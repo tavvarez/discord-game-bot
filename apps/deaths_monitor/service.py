@@ -60,7 +60,7 @@ async def monitor_deaths():
     if new_deaths:
         for death in reversed(new_deaths):  # Envia do mais antigo para o mais novo
             await send_discord_message(
-                f"💀 **{death.datetime}**\n\n{death.description}",
+                f"💀**{death.datetime}**\n\n{death.description}",
                 settings.DISCORD_WEBHOOK_URL_DEATH
             )
         save_last_deaths({generate_death_key(d) for d in current_deaths})
