@@ -4,7 +4,7 @@ from core.config import settings
 from apps.deaths_monitor.service import monitor_deaths
 from apps.online_monitor.service import monitor_online
 
-CHECK_INTERVAL = 200
+CHECK_INTERVAL = 390
 
 async def main_loop():
     print("Bot monitorando mortes e players online.")
