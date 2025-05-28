@@ -1,7 +1,7 @@
 import asyncio
 from apps.level_monitor.service import monitor_level_ups
 
-LEVEL_INTERVAL = 900  # segundos
+LEVEL_INTERVAL = 480  # segundos
 
 async def loop_monitor_level_ups():
     print("Bot monitorando level ups.")
