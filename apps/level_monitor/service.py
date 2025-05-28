@@ -70,8 +70,8 @@ async def get_player_details(name: str) -> Player | None:
             elif label == "Guild membership":
                 if "Red Sky" in value:
                     guild = "Red Sky"
-                elif "Carteira Assinada" in value:
-                    guild = "Carteira Assinada"
+                elif "Alta Cupula" in value:
+                    guild = "Alta Cupula"
 
         if level < 400:
             return None
@@ -105,7 +105,7 @@ async def monitor_level_ups():
                 if player.guild == "Red Sky":
                     msg = f"🆙 - {hora} [**FRIEND**]  **{player.name}** upou para o level **{player.level}** ( {player.vocation} )"
                     color = 0x00ff00
-                elif player.guild == "Carteira Assinada":
+                elif player.guild == "Alta Cupula":
                     msg = f"🆙 - {hora} [**ENEMY**]  **{player.name}** upou para o level **{player.level}** ( {player.vocation} )"
                     color = 0xff0000
                 else:
